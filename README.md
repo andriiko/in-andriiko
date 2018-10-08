@@ -39,11 +39,11 @@ sys	0m0.008s
 2 - Parse the products which have the word “player” in their title.
 
 ```bash
-in-excercise-andriiko$ time curl http://localhost:8080/electronics/products?titleKeyword=surveillance
+in-excercise-andriiko$ time curl http://localhost:8080/electronics/products?titleKeyword=player
 {"products":[...]}
-real	0m0.099s
-user	0m0.011s
-sys	0m0.013s
+real	0m0.093s
+user	0m0.010s
+sys	0m0.011s
 ```
 
 3 - Parse the first 10 products with Highest EAN number (Primary) and Lowest Price (Secondary).
