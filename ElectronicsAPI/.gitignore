@@ -1,0 +1,26 @@
+# IntelliJ Idea
+*.iws
+/.idea/
+/out/
+
+# JVM
+hs_err_pid*
+*.hprof
+
+# Mac
+.DS_Store
+
+# SBT (see: https://github.com/github/gitignore/blob/master/Global/SBT.gitignore)
+.cache
+**/target/
+**/lib_managed/
+**/src_managed/
+project/boot/
+
+# sbt-idea plugin (obsolete - use native IntelliJ Scala plugin instead)
+.idea_modules/
+
+# VIM
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+Session.vim
