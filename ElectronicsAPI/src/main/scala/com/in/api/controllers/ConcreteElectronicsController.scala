@@ -1,7 +1,8 @@
 package com.in.api.controllers
 
-import com.in.api.{EProducts, ProductsFilter, ProductsResponse}
+import com.in.api.{EProducts, ProductsFilter, ProductsOrder, ProductsResponse}
 import com.in.api.repositories.ElectronicsRepository
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -11,7 +12,8 @@ import scala.concurrent.Future
   */
 class ConcreteElectronicsController private(repo: ElectronicsRepository) extends ElectronicsController {
 
-  def products(filter: ProductsFilter): Future[ProductsResponse] = repo.products(filter) map ProductsResponse
+  def products(filter: ProductsFilter, order: ProductsOrder, limit: Option[Int]): Future[ProductsResponse] =
+    repo.products(filter, order, limit) map ProductsResponse
 
 }
 

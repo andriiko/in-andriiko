@@ -17,14 +17,24 @@ object ElectronicsRoutes extends ElectronicsJsonMarshalling {
         path("products") {
           parameters(
             'priceGreaterThan.as[Int].?,
-            'titleKeyword.as[String].?
+            'titleKeyword.as[String].?,
+            'asc.as[String].?,
+            'desc.as[String].?,
+            'primaryOrder.as[String].?,
+            'limit.as[Int].?
           ) {
-            (priceGreaterThan, titleKeyword) =>
+            (priceGreaterThan, titleKeyword, asc, desc, primaryOrder, limit) =>
               complete(OK, ctrl.products(
                 ProductsFilter(
                   priceGreaterThan,
                   titleKeyword
-                )
+                ),
+                ProductsOrder(
+                  asc,
+                  desc,
+                  OrderType(primaryOrder)
+                ),
+                limit
               ))
           }
         }

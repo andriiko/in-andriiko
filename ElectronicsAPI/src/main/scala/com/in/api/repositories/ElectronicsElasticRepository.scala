@@ -1,13 +1,11 @@
 package com.in.api.repositories
 
-import com.in.api.{EProduct, EProducts, ProductsFilter}
+import com.in.api.{EProduct, EProducts, ProductsFilter, ProductsOrder}
 import com.sksamuel.elastic4s.embedded.LocalNode
 import resource.managed
 
 import scala.concurrent.Future
-import com.sksamuel.elastic4s.http.search.{SearchHit, SearchResponse}
 import com.sksamuel.elastic4s.http._
-import org.elasticsearch.client.RestClientBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.annotation.tailrec
@@ -18,19 +16,23 @@ import com.in.api.repositories.morphisms.EProductMorpshisms._
 class ElectronicsElasticRepository private(client: ElasticClient) extends ElectronicsRepository {
   import ElectronicsElasticRepository._
 
-  def products(productsFilter: ProductsFilter): Future[EProducts] = {
+  private val defaultLimit = 100
+
+  def products(productsFilter: ProductsFilter, order: ProductsOrder, limit: Option[Int]): Future[EProducts] = {
     import com.sksamuel.elastic4s.http.ElasticDsl._
 
     productsFilter match {
       case ProductsFilter(Some(priceGreaterThan), None) =>
         client.execute {
-          search(idx).query { rangeQuery(Fields.ListPrice).gt(priceGreaterThan) }
+          search(idx).query { rangeQuery(Fields.ListPrice).gt(priceGreaterThan) }.sortBy(order).size(limit.getOrElse(defaultLimit))
         }.map { _.result.to[EProduct] }
       case ProductsFilter(None, Some(titleKeyword)) =>
         client.execute {
-          search(idx).query { termQuery(Fields.Title, titleKeyword) }
+          search(idx).query { termQuery(Fields.Title, titleKeyword) }.sortBy(order).size(limit.getOrElse(defaultLimit))
         }.map { _.result.to[EProduct] }
-      case _ => Future.successful(Nil)
+      case _ => client.execute {
+        search(idx).sortBy(order).size(limit.getOrElse(defaultLimit))
+      }.map { _.result.to[EProduct] }
     }
   }
 }
@@ -53,7 +55,6 @@ object ElectronicsElasticRepository {
     val localNode = LocalNode(idx, "/tmp/datapath")
     implicit val client = localNode.client(shutdownNodeOnClose = true)
 
-    //TODO: if(!indexExists)
     bootstrapElastic(bootstrapFileName) map { _ => new ElectronicsElasticRepository(client) }
 
   }

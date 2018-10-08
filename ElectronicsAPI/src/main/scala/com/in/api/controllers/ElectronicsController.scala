@@ -1,6 +1,6 @@
 package com.in.api.controllers
 
-import com.in.api.{EProducts, ProductsFilter, ProductsResponse}
+import com.in.api.{EProducts, ProductsFilter, ProductsOrder, ProductsResponse}
 
 import scala.concurrent.Future
 
@@ -9,6 +9,6 @@ import scala.concurrent.Future
   */
 trait ElectronicsController {
 
-  def products(filter: ProductsFilter): Future[ProductsResponse]
+  def products(filter: ProductsFilter, order: ProductsOrder, limit: Option[Int]): Future[ProductsResponse]
 
 }
