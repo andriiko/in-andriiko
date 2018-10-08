@@ -15,9 +15,17 @@ object ElectronicsRoutes extends ElectronicsJsonMarshalling {
     pathPrefix("electronics") {
       get {
         path("products") {
-          parameters('priceGreaterThan.as[Int].?) {
-            (priceGreaterThan) =>
-              complete(OK, ctrl.products(ProductsFilter(priceGreaterThan)))
+          parameters(
+            'priceGreaterThan.as[Int].?,
+            'titleKeyword.as[String].?
+          ) {
+            (priceGreaterThan, titleKeyword) =>
+              complete(OK, ctrl.products(
+                ProductsFilter(
+                  priceGreaterThan,
+                  titleKeyword
+                )
+              ))
           }
         }
       }

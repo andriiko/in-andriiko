@@ -5,5 +5,9 @@ package com.in.api
   * N.B. Certainly more sophisticated filter should be developed, which could nicely handle >, >= <, <= conditions.
   * */
 case class ProductsFilter(
-  priceGreaterThan: Option[Int]
+
+  priceGreaterThan: Option[Int],
+
+  titleKeyword: Option[String]
+
 )

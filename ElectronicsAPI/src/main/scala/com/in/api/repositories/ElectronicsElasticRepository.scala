@@ -22,9 +22,13 @@ class ElectronicsElasticRepository private(client: ElasticClient) extends Electr
     import com.sksamuel.elastic4s.http.ElasticDsl._
 
     productsFilter match {
-      case ProductsFilter(Some(priceGreaterThan)) =>
+      case ProductsFilter(Some(priceGreaterThan), None) =>
         client.execute {
-        search(idx).query { rangeQuery(Fields.ListPrice).gt(priceGreaterThan) }
+          search(idx).query { rangeQuery(Fields.ListPrice).gt(priceGreaterThan) }
+        }.map { _.result.to[EProduct] }
+      case ProductsFilter(None, Some(titleKeyword)) =>
+        client.execute {
+          search(idx).query { termQuery(Fields.Title, titleKeyword) }
         }.map { _.result.to[EProduct] }
       case _ => Future.successful(Nil)
     }
@@ -37,6 +41,7 @@ object ElectronicsElasticRepository {
   private val tpe = "product"
 
   private object Fields {
+    val Title = "Title"
     val ListPrice = "ListPrice"
     val EAN = "EAN"
   }
